@@ -112,7 +112,6 @@ export default function Home() {
         </div>
     );
     if (isLoading) return <div>Loading...</div>;
-    console.log(data)
     if (!ingredient_data && !ingredient_error) {
         trigger('')
     }
