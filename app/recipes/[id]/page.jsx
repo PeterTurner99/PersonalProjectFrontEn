@@ -93,15 +93,12 @@ export default function Home() {
             },
         }
         const response = await fetch(`${window.location.protocol}//${window.location.host}/api/recipes/${id}/reorder/`, requestOptions)
-        console.log(response)
 
         if (response.status == 201 || response.status == 200) {
             mutate(`${RECIPES_URL}/${id}`)
         }
         setRecipeSteps(updatedList)
     }
-
-
     if (error) return (
         <div>
             <div>
