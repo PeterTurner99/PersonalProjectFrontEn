@@ -1,18 +1,19 @@
 "use client"
 import useSWR, {useSWRConfig} from "swr";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useAuth} from "@/components/authProvider";
-import {
-    Command,
-    CommandDialog,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-    CommandShortcut,
-} from "@/components/ui/command"
+import {useParams, useRouter} from "next/navigation";
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {DialogBody} from "next/dist/client/components/react-dev-overlay/internal/components/Dialog";
+import {Textarea} from "@/components/ui/textarea";
+import FormAndMethod from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {CornerRightDown, Pencil} from 'lucide-react'
+import DialogueForm from "@/components/ui/dialogueForm";
+import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
+import useSWRMutation from "swr/mutation";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 const fetcher = async url => {
     const res = await fetch(url);
@@ -45,20 +46,6 @@ async function update_ingredient_search(url, {arg}) {
     }
     return {data: res_json, error: error}
 }
-
-import {useRouter, useParams} from "next/navigation";
-import {Button} from "@/components/ui/button";
-import {Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import {DialogBody} from "next/dist/client/components/react-dev-overlay/internal/components/Dialog";
-import {Textarea} from "@/components/ui/textarea";
-import FormAndMethod from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Pencil, CornerRightDown} from 'lucide-react'
-import DialogueForm from "@/components/ui/dialogueForm";
-import {Separator} from "@/components/ui/separator";
-import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
-import useSWRMutation from "swr/mutation";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 const INGREDIENTS_URL = '/api/ingredients/search';
 const RECIPES_URL = "/api/recipes";
@@ -106,15 +93,12 @@ export default function Home() {
             },
         }
         const response = await fetch(`${window.location.protocol}//${window.location.host}/api/recipes/${id}/reorder/`, requestOptions)
-        console.log(response)
 
         if (response.status == 201 || response.status == 200) {
             mutate(`${RECIPES_URL}/${id}`)
         }
         setRecipeSteps(updatedList)
     }
-
-
     if (error) return (
         <div>
             <div>
@@ -125,14 +109,12 @@ export default function Home() {
         </div>
     );
     if (isLoading) return <div>Loading...</div>;
-    console.log(data)
     if (!ingredient_data && !ingredient_error) {
         trigger('')
     }
-    // if (data?.recipeSteps){
-    //     setRecipeSteps(data.recipeSteps);
-    // }
-    console.log(recipeSteps)
+    if (data?.recipeSteps && recipeSteps.length === 0) {
+        setRecipeSteps(data.recipeSteps);
+    }
     return (
         <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
             <div>
