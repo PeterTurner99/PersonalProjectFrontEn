@@ -79,7 +79,7 @@ export default function Home() {
         var updatedList = [...recipeSteps]
         const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1)
         updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
-        console.log(updatedList)
+        console.log(updatedList, 'test')
         let new_order = []
         updatedList.map((item, index) => {
             new_order.push([item.id, index]);
@@ -112,7 +112,7 @@ export default function Home() {
     if (!ingredient_data && !ingredient_error) {
         trigger('')
     }
-    if (data?.recipeSteps && recipeSteps.length === 0) {
+    if (data?.recipeSteps && recipeSteps.length === 0 && data?.recipeSteps.length > 0) {
         setRecipeSteps(data.recipeSteps);
     }
     return (
@@ -250,8 +250,9 @@ export default function Home() {
             <Dialog>
                 <DialogTrigger>
                     <div>
-                        {data?.duration ? <span>Duration: {data.duration} minutes </span> : <span>No duration</span>}
-
+                        {data?.duration ? <div>
+                            <h3 className={'underline '}>Duration:</h3>
+                            {data.duration} minutes </div> : <span>No duration</span>}
                     </div>
                 </DialogTrigger>
                 <DialogContent>
@@ -285,7 +286,7 @@ export default function Home() {
                                                 {...provided.dragHandleProps}
                                                 {...provided.draggableProps} ref={provided.innerRef}>
                                                 <p className={'flex gap-4 mb-5'}>
-                                                    <span className={'underline'}>Step {step.order}:</span>
+                                                    <span className={'underline'}>Step {index + 1}:</span>
                                                     <DialogueForm url={'api/recipes/' + id + `/step/${step.id}`}
                                                                   keyValue={`${RECIPES_URL}/${id}`}
                                                                   field={'shortDesc'}

@@ -18,6 +18,12 @@ export const NavLinks = [
         href: '/ingredients/',
         linkName: 'ingredients',
     },
+    {
+        label: 'Calendar',
+        authRequired: true,
+        href: '/calendar/quickview/',
+        linkName: 'calendar',
+    },
 ]
 
 
