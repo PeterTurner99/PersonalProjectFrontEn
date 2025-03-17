@@ -1,14 +1,14 @@
 "use client"
 
-import {Calendar} from "@/components/ui/calendar";
-import {Day, useDayPicker} from "react-day-picker";
-import {addDays, startOfISOWeek, startOfWeek} from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Day, useDayPicker } from "react-day-picker";
+import { addDays, startOfISOWeek, startOfWeek } from "date-fns";
 import useSWRMutation from "swr/mutation";
 import Link from "next/link";
 
 const CALENDAR_URL = "/api/calendar/month";
 
-async function update_calendar_search(url, {arg}) {
+async function update_calendar_search(url, { arg }) {
     const res = await fetch(`${url}?date=${arg}`)
     let error = undefined
     let res_json = undefined
@@ -32,7 +32,7 @@ async function update_calendar_search(url, {arg}) {
             return_dict[date.toISOString()] = [item.recipeEntry, item.id]
         }
     })
-    return {data: return_dict, error: error}
+    return { data: return_dict, error: error }
 }
 
 export default function page() {
@@ -41,7 +41,7 @@ export default function page() {
         error,
         isMutating,
         trigger
-    } = useSWRMutation(`${CALENDAR_URL}`, update_calendar_search, {throwOnError: false});
+    } = useSWRMutation(`${CALENDAR_URL}`, update_calendar_search, { throwOnError: false });
 
     if (error) {
         console.log(error)
@@ -61,13 +61,13 @@ export default function page() {
             }
         }
         return (
-            <div className={'w-24 p-3 border rounded-xl border-accent h-24'}>
+            <div className={'w-24 mb-2 mr-4 p-3 border overflow-scroll rounded-xl border-accent h-40'}>
                 <Day {...props}  >
 
                 </Day>
                 {day_data &&
                     <Link href={`/recipes/${day_data.id}/`}
-                          className={'underline cursor-pointer font-semibold text-primary '}>
+                        className={'underline cursor-pointer font-semibold text-primary '}>
                         {day_data.name}
                     </Link>
                 }
@@ -89,7 +89,7 @@ export default function page() {
     ) {
         const start = ISOWeek
             ? startOfISOWeek(new Date())
-            : startOfWeek(new Date(), {locale, weekStartsOn});
+            : startOfWeek(new Date(), { locale, weekStartsOn });
 
         const days = [];
         for (let i = 0; i < 7; i++) {
@@ -107,8 +107,8 @@ export default function page() {
             locale,
             weekStartsOn,
             ISOWeek,
-            formatters: {formatWeekdayName},
-            labels: {labelWeekday}
+            formatters: { formatWeekdayName },
+            labels: { labelWeekday }
         } = useDayPicker();
 
         const weekdays = getWeekdays(locale, weekStartsOn, ISOWeek);
@@ -124,9 +124,9 @@ export default function page() {
                         scope="col"
                         className={'w-24 text-muted-foreground rounded-md font-normal text-[0.8rem]'}
                         style={styles.head_cell}
-                        aria-label={labelWeekday(weekday, {locale})}
+                        aria-label={labelWeekday(weekday, { locale })}
                     >
-                        {formatWeekdayName(weekday, {locale})}
+                        {formatWeekdayName(weekday, { locale })}
                     </th>
                 ))}
             </tr>
@@ -138,8 +138,8 @@ export default function page() {
             <Calendar
                 mode="single"
                 components={{
-                    Day: ({...props}) => (<DayButtonWithInfo {...props} />),
-                    HeadRow: (({...props}) => <HeadRow/>),
+                    Day: ({ ...props }) => (<DayButtonWithInfo {...props} />),
+                    HeadRow: (({ ...props }) => <HeadRow />),
                 }}
                 onMonthChange={handleChange}
                 className="rounded-md border shadow"

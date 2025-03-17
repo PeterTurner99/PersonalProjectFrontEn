@@ -54,7 +54,7 @@ export default function Page() {
 
     return (
         <div>
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+            <main className="flex max-h-screen overflow-scroll flex-col gap-8 row-start-2 items-center sm:items-start">
                 <ScrollArea>
                     <Table>
                         <TableHeader>
@@ -67,8 +67,8 @@ export default function Page() {
                                 <TableRow
                                     key={`ingredient-${id}`}>
                                     <TableCell>
-                                        <span className={'cursor-pointer'}
-                                              onClick={e => router.push(`ingredient/${ingredient.id}`)}>
+                                        <span className={''}
+                                              /* onClick={e => router.push(`ingredient/${ingredient.id}`)}*/>
                                             {ingredient.name}
                                         </span>
 
