@@ -16,8 +16,8 @@ export default function Home() {
 
     return (
         <div
-            className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+            className="grid max-h-screen overflow-scroll grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
+            <main className="flex max-h-screen overflow-scroll flex-col gap-8 row-start-2 items-center sm:items-start">
                 <div>
                     {auth.isAuthenticated ? "Authenticated" : "Not Authenticated"}
                 </div>

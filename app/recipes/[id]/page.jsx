@@ -9,11 +9,12 @@ import {DialogBody} from "next/dist/client/components/react-dev-overlay/internal
 import {Textarea} from "@/components/ui/textarea";
 import FormAndMethod from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import {CornerRightDown, Pencil} from 'lucide-react'
+import {CornerRightDown, FileXIcon, Pencil} from 'lucide-react'
 import DialogueForm from "@/components/ui/dialogueForm";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
 import useSWRMutation from "swr/mutation";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Checkbox} from "@/components/ui/checkbox";
 
 const fetcher = async url => {
     const res = await fetch(url);
@@ -47,6 +48,7 @@ async function update_ingredient_search(url, {arg}) {
     return {data: res_json, error: error}
 }
 
+
 const INGREDIENTS_URL = '/api/ingredients/search';
 const RECIPES_URL = "/api/recipes";
 const UNITS_URL = '/api/units';
@@ -55,6 +57,7 @@ export default function Home() {
     const [recipeSteps, setRecipeSteps] = useState([]);
     const [ingredients, setIngredients] = useState([]);
     const [ingredient, setIngredient] = useState('');
+    const [publicVal, setPublicVal] = useState(null);
     const [showIngredientSearch, setShowIngredientSearch] = useState(true);
     const router = useRouter();
     const params = useParams()
@@ -68,9 +71,38 @@ export default function Home() {
         trigger
     } = useSWRMutation(`${INGREDIENTS_URL}?search=`, update_ingredient_search);
     const {data: unit_data, error: unit_error, isLoading: unit_isLoading} = useSWR(`${UNITS_URL}`, fetcher);
-
+    async function deleteIngredientAndAmount(ingredient_id) {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+        const response = await fetch(`${RECIPES_URL}/${id}/${ingredient_id}`, requestOptions)
+        mutate(`${RECIPES_URL}/${id}`)
+    }
     const auth = useAuth()
+    async function changeCheckbox(val){
+        setPublicVal(val)
+        const jsonData = JSON.stringify({
+            'public' : val
+        })
 
+        const requestOptions = {
+            method: 'PUT',
+            body: jsonData,
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+        const response = await fetch(`${window.location.protocol}//${window.location.host}//${'api/recipes/' + id}`, requestOptions)
+        if (response.status == 201 || response.status == 200){
+            const responseData = await response.json()
+        }else{
+            const data = await response.json();
+            console.log(data, 'these are errors')
+        }
+    }
 
     const handleDrop = async (droppedItem) => {
         if (!droppedItem.destination) {
@@ -115,8 +147,11 @@ export default function Home() {
     if (data?.recipeSteps && recipeSteps.length === 0 && data?.recipeSteps.length > 0) {
         setRecipeSteps(data.recipeSteps);
     }
+    if (data && publicVal == null) {
+        setPublicVal(data.public)
+    }
     return (
-        <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <main className="flex flex-col max-h-screen overflow-scroll gap-8 row-start-2 items-center sm:items-start">
             <div>
                 <h1 className={"text-xl underline "}>{data?.name && data.name}
                     <Dialog>
@@ -143,6 +178,13 @@ export default function Home() {
                 </h1>
 
             </div>
+            <form id={'public-form'}>
+                <div className="flex align-middle gap-4">
+                    <Checkbox  id={'public'} name={'public'} checked={publicVal} onCheckedChange={(val) =>changeCheckbox(val)} ></Checkbox>
+                    <label htmlFor="public">Public</label>
+                </div>
+            </form>
+
             <Dialog>
                 <DialogTrigger>
                     <div>
@@ -173,7 +215,30 @@ export default function Home() {
                 {data?.ingredients ?
                     <div> {data.ingredients.map((ingredient, i) => (
                         <div key={`ingredient-display-${i}`} className={'flex flex-col mt-4'}>
-                            <p>{ingredient.amount} {ingredient.units_str} of {ingredient.name}</p>
+
+                            <p>
+                                {ingredient.amount} {ingredient.units_str} of {ingredient.name}{ingredient.details && (<span> {ingredient.details}</span>)}
+                                <Dialog>
+                                    <DialogTrigger>
+                                        <FileXIcon className={'ml-5 w-1/3 inline'}/>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Delete this item </DialogTitle>
+                                        </DialogHeader>
+
+                                        <DialogBody>
+                                            <p>Are you sure you want to delete this item?</p>
+                                            <DialogClose asChild>
+                                                <Button type={"button"} className={'ml-auto  mr-auto block mt-5'}
+                                                        onClick={() =>deleteIngredientAndAmount(ingredient.id)}>
+                                                    Submit
+                                                </Button>
+                                            </DialogClose>
+                                        </DialogBody>
+                                    </DialogContent>
+                                </Dialog>
+                            </p>
                         </div>
                     ))}</div> : <p>test </p>
 
@@ -293,7 +358,7 @@ export default function Home() {
                                                                   data={step}
                                                                   type={'text'}>
                                                         {step.shortDesc ? step.shortDesc :
-                                                            <span>No short Description</span>}
+                                                            <span></span>}
                                                     </DialogueForm>
                                                 </p>
                                                 <DialogueForm url={'api/recipes/' + id + `/step/${step.id}`}
@@ -301,7 +366,7 @@ export default function Home() {
                                                               field={'duration'}
                                                               data={step}
                                                               type={'number'}>
-                                                    <p className={"text-left"}> Duration: {step.duration} minutes</p>
+                                                    <p className={"text-left"}>{step.duration  && <span>Duration: {step.duration} minutes</span>}</p>
                                                 </DialogueForm>
                                                 <DialogueForm url={'api/recipes/' + id + `/step/${step.id}`}
                                                               keyValue={`${RECIPES_URL}/${id}`}

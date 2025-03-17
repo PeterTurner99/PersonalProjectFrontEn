@@ -45,7 +45,7 @@ export default function RootLayout({
                      enableSystem
                      disableTransitionOnChange>
           <AuthProvider>
-              <BaseLayout className="flex min-h[calc(100vh_-_theme(spacing.16))] flex-1 flex-col  bg-muted/40  md:p-10">
+              <BaseLayout className="flex max-h-screen overflow-scroll min-h[calc(100vh_-_theme(spacing.16))] flex-1 flex-col  bg-muted/40  md:p-10">
                 {children}
               </BaseLayout>
           </AuthProvider>
