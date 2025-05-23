@@ -8,7 +8,7 @@ export default async function middleware(req){
     console.log(path)
 
     // const isProtectedRoute = protectedRoutes.includes(path)
-    const isProtectedRoute = path.match('/recipes|/ingredients|/calendar')
+    const isProtectedRoute = path.match('/recipes|/ingredients|/calendar|/push')
     const refreshToken = await getRefreshToken()
     if (!refreshToken && isProtectedRoute){
         console.log('test test test');

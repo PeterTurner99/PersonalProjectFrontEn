@@ -1,12 +1,28 @@
+import { send_notification } from "@/lib/push"
+import { Button } from "../ui/button"
+
 export const NavLinks = [
   {
     label: 'Dashboard',
     authRequired: false,
     href: '/',
     linkName: 'Dashboard',
-    subLinks: [{
+    subLinks: [ ],
+    buttons: []
 
-    }]
+  },
+  {
+    label: 'Push Notifications',
+    authRequired: false,
+    href: '/push/',
+    linkName: 'Push',
+    subLinks: [],
+    buttons: [
+    <Button onClick={()=>send_notification('New page link recieved', 'sent a new page')} className="">
+                      Send this page
+    </Button>
+    
+    ]
 
   },
   {
@@ -17,7 +33,8 @@ export const NavLinks = [
     subLinks: [{
       'href' : '/recipes/upload',
       'label' : 'Add new'
-  }]
+  }],
+    buttons: []
   },
   {
     label: 'Ingredients',
@@ -31,7 +48,8 @@ export const NavLinks = [
     {
         'href' : '/ingredients/shopping',
         'label': 'Shopping List'
-    }]
+    }],
+    buttons: []
   },
   {
     label: 'Calendar',
@@ -41,7 +59,17 @@ export const NavLinks = [
     subLinks: [{
         'href' : '/calendar/',
         'label': 'Edit'
-    }]
+    },
+    {
+        'href' : '/calendar/recurring',
+        'label': 'Add Recurring Task'
+    },
+    {
+        'href' : '/calendar/week',
+        'label': 'Weekly tasks'
+    }
+],
+    buttons: []
   },
 ]
 

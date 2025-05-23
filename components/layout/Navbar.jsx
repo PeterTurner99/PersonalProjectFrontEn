@@ -46,12 +46,18 @@ export default function Navbar({ className }) {
                 className={` transition-colors hover:text-foreground ${(path).includes(navLinkItem.linkName) ? ("front") : ('text-muted-foreground')}`}>
                 {navLinkItem.label}
               </HoverCardTrigger>
-              <HoverCardContent className="flex bg-accent rounded-xl flex-col gap-2 p-4">
+              <HoverCardContent className={`flex bg-accent rounded-xl flex-col gap-2 p-4 ${((navLinkItem.subLinks.length == 0 && navLinkItem.subLinks.buttons == 0)) ? 'hidden' : 'no'}`
+             }>
                 {(navLinkItem.subLinks).map((subLinkItem, index) => (
                   <div key={`nav-links-b-${index}`} className="flex flex-col gap-2">
                     <Link href={subLinkItem.href} className="text-muted-foreground transition-colors hover:text-foreground">
                       {subLinkItem.label}
                     </Link>
+                  </div>
+                ))}
+                {(navLinkItem.buttons).map((button, index) => (
+                  <div key={`nav-links-b-${index}`} className="flex flex-col gap-2">
+                    {button}
                   </div>
                 ))}
               </HoverCardContent>

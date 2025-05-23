@@ -15,6 +15,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 const CALENDAR_URL = "/api/calendar/";
 const RECIPE_SEARCH_URL = "/api/recipes/search";
 
+
+// setstate with next search request
+// 
 async function update_recipe_search(url, { arg }) {
     const res = await fetch(`${url}${arg}`)
     const res_json = await res.json()

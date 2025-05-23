@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {Table_No_div} from "@/components/ui/table_no_div"
 
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -67,9 +68,9 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center  min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2  sm:items-start">
-        <ScrollArea>
-          <Table className={"gap-6"}>
-            <TableHeader>
+        <ScrollArea className={" h-96"}>
+          <Table_No_div className={"gap-6"}>
+            <TableHeader className="sticky top-0">
               <TableRow className={"bg-accent p-2"}>
                 <TableHead className={"w-56"}>Name</TableHead>
                 <TableHead className={"w-32"}>Duration</TableHead>
@@ -95,7 +96,7 @@ export default function Home() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table_No_div>
         </ScrollArea>
         <Link
           href={"/recipes/upload/"}

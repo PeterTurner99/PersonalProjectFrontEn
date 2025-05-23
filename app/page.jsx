@@ -10,9 +10,6 @@ export default function Home() {
     const auth = useAuth()
 
     // Get Request
-    const {data, error, isLoading} = useSWR("http://localhost:8000/api/hello", fetcher);
-    if (error) return <div>Error: {error.message}</div>;
-    if (isLoading) return <div>Loading...</div>;
 
     return (
         <div
@@ -24,7 +21,6 @@ export default function Home() {
                 <div>
                     <ThemeToggleButton></ThemeToggleButton>
                 </div>
-                {JSON.stringify(data)}
                 <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
                     <li className="mb-2">
                         Get started by editing{" "}

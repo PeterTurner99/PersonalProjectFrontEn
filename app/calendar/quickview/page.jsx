@@ -7,7 +7,7 @@ import useSWRMutation from "swr/mutation";
 import Link from "next/link";
 
 const CALENDAR_URL = "/api/calendar/month";
-
+const RECURRING_URL = "/api/calendar/recurring"
 async function update_calendar_search(url, { arg }) {
     const res = await fetch(`${url}?date=${arg}`)
     let error = undefined
@@ -18,7 +18,7 @@ async function update_calendar_search(url, { arg }) {
         error.info = errorInfo;
         error.status = res.status;
         if (res.status === 404) {
-            error.message = "No Menu Items found for this date";
+            error.message = "No Menu Items found for this date range";
         }
 
         throw error;
@@ -29,7 +29,33 @@ async function update_calendar_search(url, { arg }) {
     res_json.map((item) => {
         if (item?.date) {
             const date = new Date(Date.parse(item.date));
-            return_dict[date.toISOString()] = [item.recipeEntry, item.id]
+            return_dict[date.toDateString()] = [item.recipeEntry, item.id]
+        }
+    })
+    return { data: return_dict, error: error }
+}
+async function update_recurring_search(url, { arg }) {
+    const res = await fetch(`${url}?date=${arg}`)
+    let error = undefined
+    let res_json = undefined
+    if (!res.ok) {
+        const errorInfo = await res.json();
+        error = new Error(errorInfo);
+        error.info = errorInfo;
+        error.status = res.status;
+        if (res.status === 404) {
+            error.message = "No Recurring Items found for this date range";
+        }
+
+        throw error;
+    } else {
+        res_json = await res.json()
+    }
+    const return_dict = {}
+    res_json.map((item) => {
+        if (item?.date) {
+            const date = new Date(Date.parse(item.date));
+            return_dict[date.toDateString()] = [item.recipeEntry, item.id]
         }
     })
     return { data: return_dict, error: error }
@@ -42,7 +68,12 @@ export default function page() {
         isMutating,
         trigger
     } = useSWRMutation(`${CALENDAR_URL}`, update_calendar_search, { throwOnError: false });
-
+    let {
+        data: recurring_data,
+        error: recurring_error,
+        isMutating: recurring_mutating,
+        trigger: recurring_trigger
+    } = useSWRMutation(`${RECURRING_URL}`, update_recurring_search, { throwOnError: false });
     if (error) {
         console.log(error)
     }
@@ -51,12 +82,15 @@ export default function page() {
     if (!data) {
         trigger(firstDay.toISOString())
     }
-
+    if (!recurring_data){
+        recurring_trigger(firstDay.toISOString())
+    }
     function DayButtonWithInfo(props) {
         let day_data = null
         if (data?.data) {
-            if (data.data[props.date.toISOString()]) {
-                day_data = data.data[props.date.toISOString()][0]
+            console.log(props.date, props.date.toDateString(), data.data)
+            if (data.data[props.date.toDateString()]) {
+                day_data = data.data[props.date.toDateString()][0]
                 console.log(day_data)
             }
         }
